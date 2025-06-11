@@ -6,6 +6,7 @@
 #define DELAY_MS 20
 #define LIGHTING_STEPS 4
 
+
 Adafruit_NeoPixel strip(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
 uint8_t colors[][3] = {
   { 255, 0, 0 },      // Red

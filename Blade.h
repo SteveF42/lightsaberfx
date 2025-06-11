@@ -2,6 +2,9 @@
 #ifndef BLADE_H
 #define BLADE_H
 #include <Adafruit_NeoPixel.h>
+#include <DFRobotDFPlayerMini.h>
+
+
 
 void setupBlade();
 void enableSaber();

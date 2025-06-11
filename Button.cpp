@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "Blade.h"
 #include "Button.h"
+#include "audio.h"
 
 #define BTN_PIN 3
 #define DOUBLE_CLICK_TIME 400
@@ -14,7 +15,6 @@ bool saberEnabled = false;
 
 void setupButton() {
   pinMode(BTN_PIN, INPUT_PULLUP);
-  Serial.begin(9600);
 }
 
 void handleButton() {
@@ -34,9 +34,12 @@ void handleButton() {
     if (clickedTimes == 1) {
       if (saberEnabled) {
         disableSaber();
+        playOff();
         saberEnabled = false;
       } else {
+
         enableSaber();
+        playOn();
         saberEnabled = true;
       }
     } else if (clickedTimes == 2 && saberEnabled) {
