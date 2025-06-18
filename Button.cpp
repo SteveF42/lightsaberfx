@@ -13,6 +13,10 @@ unsigned long lastButtonTime = 0;
 uint8_t clickedTimes = 0;
 bool saberEnabled = false;
 
+bool isEnabled() {
+  return saberEnabled;
+}
+
 void setupButton() {
   pinMode(BTN_PIN, INPUT_PULLUP);
 }
@@ -34,13 +38,12 @@ void handleButton() {
     if (clickedTimes == 1) {
       if (saberEnabled) {
         disableSaber();
-        playOff();
         saberEnabled = false;
+        playEffect(SaberState::POWER_OFF);
       } else {
-
         enableSaber();
-        playOn();
         saberEnabled = true;
+        playEffect(SaberState::POWER_ON);
       }
     } else if (clickedTimes == 2 && saberEnabled) {
       changeColors();

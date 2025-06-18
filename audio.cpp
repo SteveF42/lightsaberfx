@@ -1,4 +1,6 @@
-#include "Arduino.h"
+#include "Printable.h"
+#include "HardwareSerial.h"
+
 #include "audio.h"
 #include <SoftwareSerial.h>
 #include <stdlib.h>
@@ -18,40 +20,49 @@ void setupAudio() {
 
   if (!myDFPlayer.begin(speakerSerial)) {
     Serial.println("DFPlayer not found");
-    while (true)
+    while (!myDFPlayer.begin(speakerSerial))
       ;
   }
   Serial.println("DFPLAYER FOUND");
 
-  srand(time(NULL));
-  myDFPlayer.volume(5);  // 0 to 30
+  myDFPlayer.volume(15);  // 0 to 30
 }
 
 void playEffect(SaberState state) {
-
+  // myDFPlayer.stop();
   switch (state) {
-    case SaberState::SWING: break;
-    case SaberState::CLASH: break;
+    case SaberState::POWER_ON:
+      playOn();
+      break;
+    case SaberState::POWER_OFF:
+      playOff();
+      break;
     default:
       break;
   }
 }
 
 void playOn() {
-  uint8_t folder = static_cast<uint8_t>(SaberState::POWER_ON);
-  uint8_t fileCount = static_cast<uint8_t>(FileCount::POWER_ON);
-  uint8_t fileIdx = randomInRange(1, 3);
-  myDFPlayer.playFolder(folder, fileIdx);
+  uint8_t onSound = getPowerOnSound();
+  uint8_t humm = gethummSound();
+  myDFPlayer.play(onSound);
 
-  delay(900);
-  uint8_t humm = static_cast<uint8_t>(SaberState::HUM);
-  myDFPlayer.loopFolder(humm);
+  while (true) {
+    if (myDFPlayer.available()) {
+      uint8_t type = myDFPlayer.readType();
+
+      if (type == DFPlayerPlayFinished) {
+        Serial.println("Playback finished");
+        break;
+      }
+    }
+  }
+
+  delay(950);
+  myDFPlayer.loop(humm);
 }
 
 void playOff() {
-  if (!myDFPlayer.available()) return;
-  uint8_t folder = static_cast<uint8_t>(SaberState::POWER_OFF);
-  uint8_t fileCount = static_cast<uint8_t>(FileCount::POWER_OFF);
-  uint8_t fileIdx = randomInRange(1, fileCount);
-  myDFPlayer.playFolder(folder, fileIdx);
+  uint8_t offSound = getPowerOffSound();
+  myDFPlayer.play(offSound);
 }

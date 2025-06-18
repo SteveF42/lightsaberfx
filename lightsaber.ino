@@ -1,18 +1,24 @@
 #include <DFRobotDFPlayerMini.h>
-#include "audio.h"
 
 // main.ino
 #include "Blade.h"
 #include "Button.h"
+#include "audio.h"
+#include "swingEngine.h"
 
 
 void setup() {
   Serial.begin(9600);
-  setupBlade();
-  setupButton();
-  setupAudio();
+  // setupAudio();
+  // setupBlade();
+  // setupButton();
+  setupMPU();
+
 }
 
 void loop() {
-  handleButton();
+  handleButton();  
+  if(isEnabled()){
+    // checkForSwing();
+  }
 }
