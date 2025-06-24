@@ -1,10 +1,10 @@
 // Blade.cpp
 #include "Blade.h"
 #define LED_PIN 13
-#define NUMPIXELS 280
+#define NUMPIXELS 235
 #define FADE_STEPS 100
 #define DELAY_MS 20
-#define LIGHTING_STEPS 4
+#define LIGHTING_STEPS 2
 
 
 Adafruit_NeoPixel strip(NUMPIXELS, LED_PIN, NEO_GRB + NEO_KHZ800);
@@ -18,7 +18,7 @@ uint8_t colors[][3] = {
   { 255, 255, 255 },  // White
 };
 int colorArrSize = sizeof(colors) / sizeof(colors[0]);
-int brightness = 64;
+int brightness = 50;
 int8_t colorIdx = 0;
 
 void setupBlade() {
@@ -29,17 +29,19 @@ void setupBlade() {
 }
 
 void enableSaber() {
-  for (int i = 0; i < NUMPIXELS; i++) {
+  for (int i = 0; i <= NUMPIXELS/2; i++) {
     uint8_t* color = colors[colorIdx];
     strip.setPixelColor(i, strip.Color(color[0], color[1], color[2]));
+    strip.setPixelColor(NUMPIXELS-i,strip.Color(color[0],color[1],color[2]));
     if (i % LIGHTING_STEPS == 0) strip.show();
   }
   strip.show();
 }
 
 void disableSaber() {
-  for (int i = NUMPIXELS - 1; i >= 0; i--) {
+  for (int i = NUMPIXELS/2; i >= 0; i--) {
     strip.setPixelColor(i, strip.Color(0, 0, 0));
+    strip.setPixelColor(NUMPIXELS-i,strip.Color(0,0,0));
     if (i % LIGHTING_STEPS == 0) strip.show();
   }
   strip.show();

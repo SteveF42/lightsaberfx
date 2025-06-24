@@ -10,6 +10,7 @@
 
 SoftwareSerial speakerSerial(10, 11);  // RX, TX
 DFRobotDFPlayerMini myDFPlayer;
+bool dfPlayerAvailable = false;
 
 int randomInRange(int min, int max) {
   return rand() % (max - min + 1) + min;
@@ -20,16 +21,20 @@ void setupAudio() {
 
   if (!myDFPlayer.begin(speakerSerial)) {
     Serial.println("DFPlayer not found");
-    while (!myDFPlayer.begin(speakerSerial))
-      ;
+    dfPlayerAvailable = false;
+  } else {
+    dfPlayerAvailable = true;
+    Serial.println("DFPLAYER FOUND");
   }
-  Serial.println("DFPLAYER FOUND");
 
   myDFPlayer.volume(15);  // 0 to 30
 }
 
 void playEffect(SaberState state) {
-  // myDFPlayer.stop();
+  if (!dfPlayerAvailable) {
+    return;
+  }
+
   switch (state) {
     case SaberState::POWER_ON:
       playOn();
